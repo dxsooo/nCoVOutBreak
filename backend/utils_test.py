@@ -6,18 +6,6 @@ from utils import Data
 import json
 
 
-class Test_parse_path(unittest.TestCase):
-    def test_parse_path_1(self):
-        p, c = utils.parse_path("/api/v1/provinces/guangdong/cities/dongguan")
-        self.assertEqual(p, "guangdong")
-        self.assertEqual(c, "dongguan")
-
-    def test_parse_path_2(self):
-        p, c = utils.parse_path("/api/v1/provinces/guangdong")
-        self.assertEqual(p, "guangdong")
-        self.assertIsNone(c)
-
-
 class Test_data_serialize(unittest.TestCase):
     def test_data_serialize(self):
         d = Data("东莞", "dongguan")

@@ -5,13 +5,6 @@ from html.parser import HTMLParser
 import json
 
 
-def parse_path(s):
-    pattern = re.compile(r"\/api\/v1\/provinces\/(\w+)(\/cities\/(\w+)|$)")
-    m = pattern.match(s)
-    province, city = m.groups()[0], m.groups()[2]
-    return province, city
-
-
 class ArticleParser(HTMLParser):
     articles = []
 

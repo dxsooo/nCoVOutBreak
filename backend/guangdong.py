@@ -15,13 +15,13 @@ logger.setLevel(level=logging.INFO)
 
 cities = {
     "广州市": "guangzhou",
-    "深圳市": "shenshen",
+    "深圳市": "shenzhen",
     "佛山市": "foshan",
     "东莞市": "dongguan",
     "中山市": "zhongshan",
     "珠海市": "zhuhai",
-    "江门市": "jiangmeng",
-    "肇庆市": "zhaoqin",
+    "江门市": "jiangmen",
+    "肇庆市": "zhaoqing",
     "惠州市": "huizhou",
     "汕头市": "shantou",
     "潮州市": "chaozhou",
@@ -38,11 +38,12 @@ cities = {
 }
 
 root_url = "http://wsjkw.gd.gov.cn/zwyw_yqxx/index.html"
+api_prefix = "/api/v1/provinces/guangdong"
 
 
 def parse_list_html(raw):
     pattern = re.compile(r"<li>(.*?)<\/li>")
-    pattern_1 = re.compile(r".*\d+年\d+月\d+日\d+时.*肺炎疫情.*")
+    pattern_title = re.compile(r".*\d+年\d+月\d+日.*肺炎疫情.*")
 
     p = ArticleParser()
     for m in pattern.finditer(raw):
@@ -50,7 +51,7 @@ def parse_list_html(raw):
 
     latest_url = ""
     for res in p.get_articles():
-        if pattern_1.match(res["title"]) is not None:
+        if pattern_title.match(res["title"]) is not None:
             latest_url = res["href"]
             break
     return latest_url
@@ -59,21 +60,25 @@ def parse_list_html(raw):
 def parse_content_html(raw):
     pattern = re.compile(r"(?s)<!--文章start-->(.*)<!--文章end-->")
     pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
+
     m = pattern.search(raw)
     content = m.groups()[0]
-    res = []
+    res = {}
     for i in pattern_data.finditer(content[content.rfind("确诊病例中"):]):
         if i.groups()[0] in cities.keys():
             name = i.groups()[0]
-            d = Data(name, cities[name])
+            id = cities[name]
+            d = Data(name, id)
             d.Confirmed = int(i.groups()[1])
-            res.append(d)
+            res[id] = d
     return res
 
 
 def main_handler(event, content):
     if "requestContext" not in event.keys():
-        return utils.gen_response({"errorCode": 410, "errorMsg": "event is not come from api gateway"})
+        return utils.gen_response({"errorCode": 4001, "errorMsg": "event is not come from api gateway"})
+    if event["requestContext"]["path"] != api_prefix + "/cities/{cityName}" and event["requestContext"]["path"] != api_prefix:
+        return utils.gen_response({"errorCode": 4002, "errorMsg": "request is not from setting api path"})
 
     list_page = requests.get(root_url)
     latest_url = parse_list_html(list_page.text)
@@ -81,13 +86,9 @@ def main_handler(event, content):
     content_page = requests.get(latest_url)
     all_data = parse_content_html(content_page.text)
 
-    province, city = utils.parse_path(event["requestContext"]["path"])
-    if province is None:
-        return utils.gen_response({"errorCode": 411, "errorMsg": "request is not from setting api path"})
-
-    if city is not None:
-        # get the city only
-        # if city not in list
-        # return {"errorCode":412,"errorMsg":"article is not found"}
-        pass
-    return utils.gen_response(utils.serialize(all_data))
+    if event["requestContext"]["path"] == api_prefix + "/cities/{cityName}":
+        city = event["pathParameters"]["cityName"]
+        if city not in all_data.keys():
+            return utils.gen_response({"errorCode":4003, "errorMsg":"article is not found"})
+        return utils.gen_response(utils.serialize(all_data[city]))
+    return utils.gen_response(utils.serialize(list(all_data.values())))

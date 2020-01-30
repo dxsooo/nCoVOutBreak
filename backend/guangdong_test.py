@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import utils
 import guangdong
+import os
 
 
 class Test_parse_html(unittest.TestCase):
     def test_parse_list_html(self):
-        with open('testdata/guangdong_list_sample.html') as f:
+        with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/guangdong_list_sample.html',encoding='utf-8') as f:
             res = guangdong.parse_list_html(f.read())
             self.assertEqual(
-                res, "http://wsjkw.gd.gov.cn/zwyw_yqxx/content/post_2880075.html")
+                res, "http://wsjkw.gd.gov.cn/zwyw_yqxx/content/post_2880263.html")
 
     def test_parse_content_html(self):
-        with open('testdata/guangdong_content_sample.html') as f:
+        with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/guangdong_content_sample.html',encoding='utf-8') as f:
             res = guangdong.parse_content_html(f.read())
-            self.assertEqual(res[0].CityName, "广州市")
-            self.assertEqual(res[0].Confirmed, 63)
+            self.assertEqual(res['guangzhou'].CityName, "广州市")
+            self.assertEqual(res['guangzhou'].Confirmed, 63)
 
 
 if __name__ == '__main__':
