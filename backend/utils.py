@@ -59,5 +59,5 @@ def gen_response(body):
             'Content-Type': 'application/json; charset=utf-8',
             'Access-Control-Allow-Origin': '*'
         },
-        'body': json.dumps(body)
+        'body': json.dumps(body, ensure_ascii=False)
     }
