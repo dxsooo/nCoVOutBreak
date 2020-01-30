@@ -2,6 +2,7 @@
 
 import re
 from html.parser import HTMLParser
+import json
 
 def parse_path(s):
     pattern = re.compile(r"\/api\/v1\/provinces\/(\w+)(\/cities\/(\w+)|$)")
@@ -46,3 +47,14 @@ def serialize(data):
             "healed": data.Healed,
             "dead": data.Dead,
         }
+
+def gen_response(body):
+    return {
+        'isBase64Encoded': False,
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Access-Control-Allow-Origin': '*'
+        },
+        'body': json.dumps(body)
+    }

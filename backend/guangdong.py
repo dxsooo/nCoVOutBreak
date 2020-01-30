@@ -50,7 +50,7 @@ def parse_content_html(raw):
 
 def main_handler(event,content):
     if "requestContext" not in event.keys():
-        return {"errorCode":410,"errorMsg":"event is not come from api gateway"}
+        return utils.gen_response({"errorCode":410,"errorMsg":"event is not come from api gateway"})
 
     list_page = requests.get(root_url)
     latest_url = parse_list_html(list_page.text)
@@ -60,11 +60,11 @@ def main_handler(event,content):
 
     province, city = utils.parse_path(event["requestContext"]["path"])
     if province is None:
-        return {"errorCode":411,"errorMsg":"request is not from setting api path"}
+        return utils.gen_response({"errorCode":411,"errorMsg":"request is not from setting api path"})
 
     if city is not None:
         # get the city only
         # if city not in list
         # return {"errorCode":412,"errorMsg":"article is not found"}
         pass
-    return utils.serialize(all_data)
+    return utils.gen_response(utils.serialize(all_data))

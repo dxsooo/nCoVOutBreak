@@ -1,4 +1,5 @@
 __pycache__/
 
-*_test.py
-*_sample.html
+testdata/
+
+exam.py
