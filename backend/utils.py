@@ -4,6 +4,7 @@ import re
 from html.parser import HTMLParser
 import json
 
+
 def parse_path(s):
     pattern = re.compile(r"\/api\/v1\/provinces\/(\w+)(\/cities\/(\w+)|$)")
     m = pattern.match(s)
@@ -17,10 +18,10 @@ class ArticleParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         article = {}
         for attr in attrs:
-            article[attr[0]]=attr[1]
+            article[attr[0]] = attr[1]
         if 'title' in article.keys() and 'href' in article.keys():
             self.articles.append(article)
-    
+
     def get_articles(self):
         return self.articles
 
@@ -36,6 +37,7 @@ class Data:
         self.CityName = city_name
         self.CityKey = city_key
 
+
 def serialize(data):
     if isinstance(data, list):
         return [serialize(x) for x in data]
@@ -47,6 +49,7 @@ def serialize(data):
             "healed": data.Healed,
             "dead": data.Dead,
         }
+
 
 def gen_response(body):
     return {

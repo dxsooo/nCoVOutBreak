@@ -14,10 +14,31 @@ logger = logging.getLogger()
 logger.setLevel(level=logging.INFO)
 
 cities = {
-    "东莞市": "dongguan"
+    "广州市": "guangzhou",
+    "深圳市": "shenshen",
+    "佛山市": "foshan",
+    "东莞市": "dongguan",
+    "中山市": "zhongshan",
+    "珠海市": "zhuhai",
+    "江门市": "jiangmeng",
+    "肇庆市": "zhaoqin",
+    "惠州市": "huizhou",
+    "汕头市": "shantou",
+    "潮州市": "chaozhou",
+    "揭阳市": "jieyang",
+    "汕尾市": "shanwei",
+    "湛江市": "zhanjiang",
+    "茂名市": "maoming",
+    "阳江市": "yangjiang",
+    "云浮市": "yunfu",
+    "韶关市": "shaoguan",
+    "清远市": "qingyuan",
+    "梅州市": "meizhou",
+    "河源市": "heyuan"
 }
 
 root_url = "http://wsjkw.gd.gov.cn/zwyw_yqxx/index.html"
+
 
 def parse_list_html(raw):
     pattern = re.compile(r"<li>(.*?)<\/li>")
@@ -34,6 +55,7 @@ def parse_list_html(raw):
             break
     return latest_url
 
+
 def parse_content_html(raw):
     pattern = re.compile(r"(?s)<!--文章start-->(.*)<!--文章end-->")
     pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
@@ -48,9 +70,10 @@ def parse_content_html(raw):
             res.append(d)
     return res
 
-def main_handler(event,content):
+
+def main_handler(event, content):
     if "requestContext" not in event.keys():
-        return utils.gen_response({"errorCode":410,"errorMsg":"event is not come from api gateway"})
+        return utils.gen_response({"errorCode": 410, "errorMsg": "event is not come from api gateway"})
 
     list_page = requests.get(root_url)
     latest_url = parse_list_html(list_page.text)
@@ -60,7 +83,7 @@ def main_handler(event,content):
 
     province, city = utils.parse_path(event["requestContext"]["path"])
     if province is None:
-        return utils.gen_response({"errorCode":411,"errorMsg":"request is not from setting api path"})
+        return utils.gen_response({"errorCode": 411, "errorMsg": "request is not from setting api path"})
 
     if city is not None:
         # get the city only
