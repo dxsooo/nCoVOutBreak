@@ -1,8 +1,11 @@
 # 后端
-获取最新疫情数据的 API，使用 Python 开发，架构方案是 腾讯云函数+API网关
+获取最新疫情数据的 API，使用 Python 开发，架构方案是 腾讯云函数+API网关  
+由于每个省份的数据信息解析有别，对每个省份单独配置接口和编写入口代码
+
+*API 地址： http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com*
 
 ## API 设计
-整体符合 RESTful 风格，获取数据 API
+整体符合 RESTful 风格
 ```
 # 获取特定省份数据
 GET /api/v1/provinces/{provinceName}
@@ -20,3 +23,6 @@ curl http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/
 curl http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong/cities/dongguan
 {"city": "东莞市", "id": "dongguan", "confirmed": 11, "healed": 0, "dead": 0}
 ```
+
+## 补充说明
+由于目前各省卫健委仅提供到确诊病例数，治愈和死亡病例数暂处理为0。
