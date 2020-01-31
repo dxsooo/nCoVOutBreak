@@ -6,7 +6,10 @@ import json
 
 
 class ArticleParser(HTMLParser):
-    articles = []
+
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.articles = []
 
     def handle_starttag(self, tag, attrs):
         article = {}

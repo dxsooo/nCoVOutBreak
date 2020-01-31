@@ -14,35 +14,26 @@ logger = logging.getLogger()
 logger.setLevel(level=logging.INFO)
 
 cities = {
-    "广州市": "guangzhou",
-    "深圳市": "shenzhen",
-    "佛山市": "foshan",
-    "东莞市": "dongguan",
-    "中山市": "zhongshan",
-    "珠海市": "zhuhai",
-    "江门市": "jiangmen",
-    "肇庆市": "zhaoqing",
-    "惠州市": "huizhou",
-    "汕头市": "shantou",
-    "潮州市": "chaozhou",
-    "揭阳市": "jieyang",
-    "汕尾市": "shanwei",
-    "湛江市": "zhanjiang",
-    "茂名市": "maoming",
-    "阳江市": "yangjiang",
-    "云浮市": "yunfu",
-    "韶关市": "shaoguan",
-    "清远市": "qingyuan",
-    "梅州市": "meizhou",
-    "河源市": "heyuan"
+    "石家庄市": "shijiazhuang",
+    "唐山市": "tangshan",
+    "秦皇岛市": "qinhuangdao",
+    "邯郸市": "handan",
+    "邢台市": "xingtai",
+    "保定市": "baoding",
+    "张家口市": "zhangjiakou",
+    "承德市": "chengde",
+    "沧州市": "cangzhou",
+    "廊坊市": "langfang",
+    "衡水市": "hengshui",
 }
 
-root_url = "http://wsjkw.gd.gov.cn/zwyw_yqxx/index.html"
-api_prefix = "/api/v1/provinces/guangdong"
+base_url = "http://hebwst.gov.cn/"
+root_url = base_url + "index.do?templet=new_list&cid=14"
+api_prefix = "/api/v1/provinces/hebei"
 
 
 def parse_list_html(raw):
-    pattern = re.compile(r"<li>(.*?)<\/li>")
+    pattern = re.compile(r"(?s)<td class='sy_new_list' height=32>(.*?)<\/td>")
     pattern_title = re.compile(r".*\d+年\d+月\d+日.*肺炎疫情.*")
 
     p = ArticleParser()
@@ -53,13 +44,13 @@ def parse_list_html(raw):
     latest_url = ""
     for res in p.get_articles():
         if pattern_title.match(res["title"]) is not None:
-            latest_url = res["href"]
+            latest_url = base_url + res["href"]
             break
     return latest_url
 
 
 def parse_content_html(raw):
-    pattern = re.compile(r"(?s)<!--文章start-->(.*)<!--文章end-->")
+    pattern = re.compile(r"(?s)<div class='con_wz'>(.*)</div>")
     pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
 
     m = pattern.search(raw)
@@ -69,9 +60,10 @@ def parse_content_html(raw):
         if i.groups()[0] in cities.keys():
             name = i.groups()[0]
             id = cities[name]
-            d = Data(name, id)
-            d.Confirmed = int(i.groups()[1])
-            res[id] = d
+            if id not in res.keys():
+                d = Data(name, id)
+                d.Confirmed = int(i.groups()[1])
+                res[id] = d
     return res
 
 
