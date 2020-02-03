@@ -70,10 +70,14 @@ def parse_content_html(raw):
     cm = pattern_confirm.search(content)
     if cm is not None:
         province.Confirmed = int(cm.groups()[0])
+    pattern_heal = re.compile(r"累计出院(\d+)例")
+    hm = pattern_heal.search(content)
+    if hm is not None:
+        province.Healed = int(hm.groups()[0])
 
     city = {}
     pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
-    for i in pattern_data.finditer(content[content.rfind("确诊病例中"):]):
+    for i in pattern_data.finditer(content[content.rfind("累计报告确诊病例中"):]):
         if i.groups()[0] in cities.keys():
             name = i.groups()[0]
             id = cities[name]
@@ -91,6 +95,8 @@ def main_handler(event, content):
 
     list_page = requests.get(root_url)
     latest_url = parse_list_html(list_page.text)
+    if len(latest_url) == 0:
+        return utils.gen_response({"errorCode": 5001, "errorMsg": "failed to crawl data"})
 
     content_page = requests.get(latest_url)
     p, city_data = parse_content_html(content_page.text)
@@ -98,7 +104,7 @@ def main_handler(event, content):
     if event["requestContext"]["path"] == api_prefix + "/cities/{cityName}":
         city = event["pathParameters"]["cityName"]
         if city not in city_data.keys():
-            return utils.gen_response({"errorCode":4003, "errorMsg":"article is not found"})
+            return utils.gen_response({"errorCode":4003, "errorMsg":"not found"})
         return utils.gen_response(utils.serialize(city_data[city]))
     
     p.Cities = list(city_data.values())

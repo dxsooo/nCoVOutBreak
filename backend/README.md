@@ -16,12 +16,166 @@ GET /api/v1/provinces/{provinceName}/cities/{cityName}
 
 ## 请求示例
 ``` bash
-curl http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong  
-[{"city": "广州市", "id": "guangzhou", "confirmed": 94, "healed": 0, "dead": 0}, {"city": "深圳市", "id": "shenshen", "confirmed": 98, "healed": 0, "dead": 0}, {"city": "珠海市", "id": "zhuhai", "confirmed": 26, "healed": 0, "dead": 0}, {"city": "汕头市", "id": "shantou", "confirmed": 12, "healed": 0, "dead": 0}, {"city": "佛山市", "id": "foshan", "confirmed": 25, "healed": 0, "dead": 0}, {"city": "韶关市", "id": "shaoguan", "confirmed": 4, "healed": 0, "dead": 0}, {"city": "河源市", "id": "heyuan", "confirmed": 1, "healed": 0, "dead": 0}, {"city": "梅州市", "id": "meizhou", "confirmed": 5, "healed": 0, "dead": 0}, {"city": "惠州市", "id": "huizhou", "confirmed": 17, "healed": 0, "dead": 0}, {"city": "汕尾市", "id": "shanwei", "confirmed": 1, "healed": 0, "dead": 0}, {"city": "东莞市", "id": "dongguan", "confirmed": 11, "healed": 0, "dead": 0}, {"city": "中山市", "id": "zhongshan", "confirmed": 18, "healed": 0, "dead": 0}, {"city": "江门市", "id": "jiangmeng", "confirmed": 1, "healed": 0, "dead": 0}, {"city": "阳江市", "id": "yangjiang", "confirmed": 10, "healed": 0, "dead": 0}, {"city": "湛江市", "id": "zhanjiang", "confirmed": 11, "healed": 0, "dead": 0}, {"city": "茂名市", "id": "maoming", "confirmed": 3, "healed": 0, "dead": 0}, {"city": "肇庆市", "id": "zhaoqin", "confirmed": 5, "healed": 0, "dead": 0}, {"city": "清远市", "id": "qingyuan", "confirmed": 6, "healed": 0, "dead": 0}, {"city": "揭阳市", "id": "jieyang", "confirmed": 6, "healed": 0, "dead": 0}]
+curl -s http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong | jq                                
+{
+  "province": "广东",
+  "id": "guangdong",
+  "confirmed": 683,
+  "healed": 14,
+  "dead": 0,
+  "cities": [
+    {
+      "city": "深圳市",
+      "id": "shenzhen",
+      "confirmed": 226,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "广州市",
+      "id": "guangzhou",
+      "confirmed": 189,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "珠海市",
+      "id": "zhuhai",
+      "confirmed": 51,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "佛山市",
+      "id": "foshan",
+      "confirmed": 43,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "东莞市",
+      "id": "dongguan",
+      "confirmed": 31,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "惠州市",
+      "id": "huizhou",
+      "confirmed": 28,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "中山市",
+      "id": "zhongshan",
+      "confirmed": 25,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "汕头市",
+      "id": "shantou",
+      "confirmed": 17,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "湛江市",
+      "id": "zhanjiang",
+      "confirmed": 14,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "阳江市",
+      "id": "yangjiang",
+      "confirmed": 10,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "肇庆市",
+      "id": "zhaoqing",
+      "confirmed": 7,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "梅州市",
+      "id": "meizhou",
+      "confirmed": 7,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "清远市",
+      "id": "qingyuan",
+      "confirmed": 6,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "揭阳市",
+      "id": "jieyang",
+      "confirmed": 6,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "韶关市",
+      "id": "shaoguan",
+      "confirmed": 5,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "汕尾市",
+      "id": "shanwei",
+      "confirmed": 5,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "茂名市",
+      "id": "maoming",
+      "confirmed": 4,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "江门市",
+      "id": "jiangmen",
+      "confirmed": 4,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "潮州市",
+      "id": "chaozhou",
+      "confirmed": 4,
+      "healed": 0,
+      "dead": 0
+    },
+    {
+      "city": "河源市",
+      "id": "heyuan",
+      "confirmed": 1,
+      "healed": 0,
+      "dead": 0
+    }
+  ]
+}
 ```
 ``` bash
-curl http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong/cities/dongguan
-{"city": "东莞市", "id": "dongguan", "confirmed": 11, "healed": 0, "dead": 0}
+curl -s http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong/cities/dongguan | jq
+{
+  "city": "东莞市",
+  "id": "dongguan",
+  "confirmed": 31,
+  "healed": 0,
+  "dead": 0
+}
 ```
 
 ## 支持情况
