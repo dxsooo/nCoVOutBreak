@@ -22,7 +22,7 @@ class ArticleParser(HTMLParser):
         return self.articles
 
 
-class Data:
+class CityData:
     Confirmed = 0
     Healed = 0
     Dead = 0
@@ -34,16 +34,38 @@ class Data:
         self.CityKey = city_key
 
 
+class ProvinceData:
+    Confirmed = 0
+    Healed = 0
+    Dead = 0
+    ProvinceName = ""
+    ProvinceKey = ""
+    Cities = []
+
+    def __init__(self, province_name, province_key):
+        self.ProvinceName = province_name
+        self.ProvinceKey = province_key
+
+
 def serialize(data):
     if isinstance(data, list):
         return [serialize(x) for x in data]
-    if isinstance(data, Data):
+    if isinstance(data, CityData):
         return {
             "city": data.CityName,
             "id": data.CityKey,
             "confirmed": data.Confirmed,
             "healed": data.Healed,
             "dead": data.Dead,
+        }
+    if isinstance(data, ProvinceData):
+        return {
+            "province": data.ProvinceName,
+            "id": data.ProvinceKey,
+            "confirmed": data.Confirmed,
+            "healed": data.Healed,
+            "dead": data.Dead,
+            "cities" : serialize(data.Cities)
         }
 
 

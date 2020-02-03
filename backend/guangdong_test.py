@@ -14,9 +14,11 @@ class Test_parse_html(unittest.TestCase):
 
     def test_parse_content_html(self):
         with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/guangdong_content_sample.html',encoding='utf-8') as f:
-            res = guangdong.parse_content_html(f.read())
-            self.assertEqual(res['guangzhou'].CityName, "广州市")
-            self.assertEqual(res['guangzhou'].Confirmed, 63)
+            province, city = guangdong.parse_content_html(f.read())
+            self.assertEqual(province.ProvinceName, "广东")
+            self.assertEqual(province.Confirmed, 272)
+            self.assertEqual(city['guangzhou'].CityName, "广州市")
+            self.assertEqual(city['guangzhou'].Confirmed, 63)
 
 
 if __name__ == '__main__':
