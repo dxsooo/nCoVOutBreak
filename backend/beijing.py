@@ -4,7 +4,7 @@ import sys
 import logging
 import json
 import utils
-from utils import ArticleParser, Data
+from utils import ArticleParser, CityData, ProvinceData
 import requests
 import re
 from html.parser import HTMLParser
@@ -34,7 +34,9 @@ cities = {
 }
 
 root_url = "http://wjw.beijing.gov.cn/xwzx_20031/xwfb/"
-api_prefix = "/api/v1/provinces/beijing"
+provinceKey = "beijing"
+provinceName = "北京"
+api_prefix = "/api/v1/provinces/" + provinceKey
 
 
 def parse_list_html(raw):
@@ -56,20 +58,30 @@ def parse_list_html(raw):
 
 def parse_content_html(raw):
     pattern = re.compile(r"(?s)<!--content begin -->(.*)<!--content end -->")
-    pattern_data = re.compile(r"[。，、]([\u4E00-\u9FA5]+)(\d+)例")
-
     m = pattern.search(raw)
     content = m.groups()[0]
-    res = {}
+
+    province = ProvinceData(provinceName, provinceKey)
+    pattern_confirm = re.compile(r"确诊病例(\d+)例")
+    cm = pattern_confirm.search(content)
+    if cm is not None:
+        province.Confirmed = int(cm.groups()[0])
+    pattern_heal = re.compile(r"出院(\d+)例")
+    hm = pattern_heal.search(content)
+    if hm is not None:
+        province.Healed = int(hm.groups()[0])
+
+    city = {}
+    pattern_data = re.compile(r"[。，、]([\u4E00-\u9FA5]+)(\d+)例")
     for i in pattern_data.finditer(content[content.rfind("累计确诊"):]):
         if i.groups()[0] in cities.keys():
             name = i.groups()[0]
             id = cities[name]
-            if id not in res.keys():
-                d = Data(name, id)
+            if id not in city.keys():
+                d = CityData(name, id)
                 d.Confirmed = int(i.groups()[1])
-                res[id] = d
-    return res
+                city[id] = d
+    return province, city
 
 
 def main_handler(event, content):
@@ -84,11 +96,13 @@ def main_handler(event, content):
         return utils.gen_response({"errorCode": 5001, "errorMsg": "failed to crawl data"})
 
     content_page = requests.get(latest_url)
-    all_data = parse_content_html(content_page.text)
+    p, city_data = parse_content_html(content_page.text)
 
     if event["requestContext"]["path"] == api_prefix + "/cities/{cityName}":
         city = event["pathParameters"]["cityName"]
-        if city not in all_data.keys():
-            return utils.gen_response({"errorCode":4003, "errorMsg":"article is not found"})
-        return utils.gen_response(utils.serialize(all_data[city]))
-    return utils.gen_response(utils.serialize(list(all_data.values())))
+        if city not in city_data.keys():
+            return utils.gen_response({"errorCode":4003, "errorMsg":"not found"})
+        return utils.gen_response(utils.serialize(city_data[city]))
+    
+    p.Cities = list(city_data.values())
+    return utils.gen_response(utils.serialize(p))
