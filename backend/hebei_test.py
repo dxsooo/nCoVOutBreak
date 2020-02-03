@@ -16,7 +16,7 @@ class Test_parse_html(unittest.TestCase):
         with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/hebei_content_sample.html',encoding='utf-8') as f:
             province, city = hebei.parse_content_html(f.read())
             self.assertEqual(province.ProvinceName, "河北")
-            self.assertEqual(province.Confirmed, 17)
+            self.assertEqual(province.Confirmed, 82)
             self.assertEqual(province.Dead, 1)
             self.assertEqual(city['shijiazhuang'].CityName, "石家庄市")
             self.assertEqual(city['shijiazhuang'].Confirmed, 11)

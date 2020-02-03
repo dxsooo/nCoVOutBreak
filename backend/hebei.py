@@ -57,7 +57,7 @@ def parse_content_html(raw):
     content = m.groups()[0]
 
     province = ProvinceData(provinceName, provinceKey)
-    pattern_confirm = re.compile(r"确诊病例(\d+)例")
+    pattern_confirm = re.compile(r"累计报告确诊病例(\d+)例")
     cm = pattern_confirm.search(content)
     if cm is not None:
         province.Confirmed = int(cm.groups()[0])
@@ -91,6 +91,8 @@ def main_handler(event, content):
 
     list_page = requests.get(root_url)
     latest_url = parse_list_html(list_page.text)
+    if len(latest_url) == 0:
+        return utils.gen_response({"errorCode": 5001, "errorMsg": "failed to crawl data"})
 
     content_page = requests.get(latest_url)
     p, city_data = parse_content_html(content_page.text)
