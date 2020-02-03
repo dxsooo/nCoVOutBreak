@@ -18,6 +18,7 @@ class Test_parse_html(unittest.TestCase):
             self.assertEqual(province.ProvinceName, "北京")
             self.assertEqual(province.Confirmed, 139)
             self.assertEqual(province.Healed, 5)
+            self.assertEqual(province.Dead, 1)
             self.assertEqual(city['haidian'].CityName, "海淀区")
             self.assertEqual(city['haidian'].Confirmed, 27)
 
