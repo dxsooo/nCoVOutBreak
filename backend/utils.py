@@ -65,7 +65,7 @@ def serialize(data):
             "confirmed": data.Confirmed,
             "healed": data.Healed,
             "dead": data.Dead,
-            "cities" : serialize(data.Cities)
+            "cities": serialize(data.Cities)
         }
 
 
@@ -79,3 +79,13 @@ def gen_response(body):
         },
         'body': json.dumps(body, ensure_ascii=False)
     }
+
+
+def remove_preposition(s):
+    preposition_strs = ["其中"]
+    res = s
+    for prep in preposition_strs:
+        if prep in s:
+            res = s[s.find(prep)+len(prep):]
+            break
+    return res

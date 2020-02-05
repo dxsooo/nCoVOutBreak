@@ -23,7 +23,13 @@ class Test_data_serialize(unittest.TestCase):
         d.Healed = 3
         dd = utils.serialize(d)
         self.assertDictEqual(
-            dd, {"province": "广东", "id": "guangdong", "confirmed": 2, "dead": 1, "healed": 3, "cities":[]})
+            dd, {"province": "广东", "id": "guangdong", "confirmed": 2, "dead": 1, "healed": 3, "cities": []})
+
+
+class Test_remove(unittest.TestCase):
+    def test_remove_preposition(self):
+        s = '其中广州市'
+        self.assertEqual(utils.remove_preposition(s), "广州市")
 
 
 if __name__ == '__main__':
