@@ -77,7 +77,7 @@ def parse_content_html(raw):
 
     city = {}
     pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
-    for i in pattern_data.finditer(content[content.rfind("累计报告确诊病例中"):]):
+    for i in pattern_data.finditer(content[content.rfind("　　确诊病例中"):]):
         if i.groups()[0] in cities.keys():
             name = i.groups()[0]
             id = cities[name]
