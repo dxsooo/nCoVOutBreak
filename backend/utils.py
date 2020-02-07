@@ -10,13 +10,24 @@ class ArticleParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.articles = []
+        self.temp_article = None
 
     def handle_starttag(self, tag, attrs):
         article = {}
         for attr in attrs:
             article[attr[0]] = attr[1]
-        if 'title' in article.keys() and 'href' in article.keys():
+        if 'href' in article.keys():
+            if 'title' in article.keys():
+                self.articles.append(article)
+            else:
+                self.temp_article = article
+    
+    def handle_data(self, data):
+        if self.temp_article is not None:
+            article = self.temp_article
+            article['title'] = data
             self.articles.append(article)
+            self.temp_article = None
 
     def get_articles(self):
         return self.articles
