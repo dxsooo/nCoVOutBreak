@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.19.2",
     "echarts": "^4.6.0",
     "echarts-for-react": "^2.0.15-beta.1",
     "gh-pages": "^2.2.0",
@@ -36,5 +37,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://service-r8373tyc-1253891892.gz.apigw.tencentcs.com"
 }

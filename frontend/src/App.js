@@ -1,176 +1,56 @@
 import React, { Component } from 'react';
 import ReactEcharts from 'echarts-for-react'
+import axios from 'axios';
 import './App.css';
 
 require('echarts/map/js/province/guangdong.js');
-
-const raw = {
-  "province": "广东",
-  "id": "guangdong",
-  "confirmed": 1131,
-  "healed": 128,
-  "dead": 1,
-  "cities": [
-    {
-      "city": "深圳市",
-      "id": "shenzhen",
-      "confirmed": 366,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "广州市",
-      "id": "guangzhou",
-      "confirmed": 307,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "珠海市",
-      "id": "zhuhai",
-      "confirmed": 83,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "佛山市",
-      "id": "foshan",
-      "confirmed": 67,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "东莞市",
-      "id": "dongguan",
-      "confirmed": 58,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "中山市",
-      "id": "zhongshan",
-      "confirmed": 51,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "惠州市",
-      "id": "huizhou",
-      "confirmed": 48,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "汕头市",
-      "id": "shantou",
-      "confirmed": 25,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "湛江市",
-      "id": "zhanjiang",
-      "confirmed": 21,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "江门市",
-      "id": "jiangmen",
-      "confirmed": 19,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "肇庆市",
-      "id": "zhaoqing",
-      "confirmed": 14,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "阳江市",
-      "id": "yangjiang",
-      "confirmed": 13,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "梅州市",
-      "id": "meizhou",
-      "confirmed": 13,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "清远市",
-      "id": "qingyuan",
-      "confirmed": 10,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "茂名市",
-      "id": "maoming",
-      "confirmed": 10,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "揭阳市",
-      "id": "jieyang",
-      "confirmed": 7,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "韶关市",
-      "id": "shaoguan",
-      "confirmed": 6,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "汕尾市",
-      "id": "shanwei",
-      "confirmed": 5,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "潮州市",
-      "id": "chaozhou",
-      "confirmed": 5,
-      "healed": 0,
-      "dead": 0
-    },
-    {
-      "city": "河源市",
-      "id": "heyuan",
-      "confirmed": 3,
-      "healed": 0,
-      "dead": 0
-    }
-  ]
-}
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
   }
-  timeTicket = null;
-  getInitialState = () => ({option: this.getOption()});
+  getInitialState = () => ({
+    option: this.getOption(),
+    isLoaded: false
+  });
+
+  componentDidMount(){
+    axios.get("/api/v1/provinces/guangdong").then(
+      result => {
+        const data = result.data
+        const option = this.state.option;
+        option.title.text = data.province + '新冠肺炎 2019-nCoV 爆发最新疫情情况';
+        option.title.subtext = '累计确诊病例:' + data.confirmed + ' 累计死亡病例:' + data.dead + ' 累计治愈病例:' + data.healed;
+        option.series[0].mapType = data.province 
+        option.series[0].data = data.cities.map(x => { return {'name': x.city, 'value': x.confirmed} })
+        this.setState({
+          option: option,
+          isLoaded: true
+        });
+      },
+      // Note: it's important to handle errors here
+      // instead of a catch() block so that we don't swallow
+      // exceptions from actual bugs in components.
+      error => {
+        console.error(error)
+      }
+      );
+  }
 
   getOption = () => {
     return {
       title: {
-        text: '广东省新冠肺炎 2019-nCoV 爆发最新疫情情况',
-        subtext: '累计确诊病例:' + raw.confirmed + ' 累计死亡病例:' + raw.dead + ' 累计治愈病例:' + raw.healed,
+        text: '新冠肺炎 2019-nCoV 爆发最新疫情情况',
+        subtext: '累计确诊病例:' + 0 + ' 累计死亡病例:' + 0 + ' 累计治愈病例:' + 0,
         left: 'center'
       },
       tooltip: {
-        trigger: 'item'
+        trigger: 'item',
+        formatter: function(data){
+          return isNaN(data.value)?data.name:
+              (data.name + "<br/>" + data.seriesName + ':' + data.value);
+        }
       },
       visualMap: {
         min: 0,
@@ -194,7 +74,7 @@ class App extends Component {
         {
           name: '确诊',
           type: 'map',
-          mapType: '广东',
+          mapType: null,
           label: {
             normal: {
               show: true
@@ -203,14 +83,16 @@ class App extends Component {
               show: true
             }
           },
-          data: raw.cities.map(x => { return {'name': x.city, 'value':x.confirmed};})
+          // data: raw.cities.map(x => { return {'name': x.city, 'value':x.confirmed};})
+          data: []
         }
       ]
     };
   };
 
   render(){
-    return (
+    const res = !this.state.isLoaded?<div/>:
+     (
       <div className="App">
         <header className="App-header">
           <ReactEcharts
@@ -221,6 +103,7 @@ class App extends Component {
           </header>
       </div>
     );
+    return res;
   }
 }
 
