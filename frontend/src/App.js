@@ -16,7 +16,7 @@ class App extends Component {
   });
 
   componentDidMount(){
-    axios.get("/api/v1/provinces/guangdong").then(
+    axios.get("https://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/guangdong").then(
       result => {
         const data = result.data
         const option = this.state.option;
