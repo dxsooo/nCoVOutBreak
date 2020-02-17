@@ -37,7 +37,7 @@ api_prefix = "/api/v1/provinces/" + provinceKey
 
 def parse_list_html(raw):
     pattern = re.compile(r"(?s)<li >(.*?)<\/li>")
-    pattern_title = re.compile(r"内蒙古自治区新型冠状病毒感染的肺炎疫情情况")
+    pattern_title = re.compile(r".*\d+年\d+月\d+日.*肺炎疫情.*")
 
     p = ArticleParser()
     for m in pattern.finditer(raw):
@@ -62,12 +62,12 @@ def parse_content_html(raw):
     cm = pattern_confirm.search(content)
     if cm is not None:
         province.Confirmed = int(cm.groups()[0])
-    pattern_heal = re.compile(r".*?(\d+)例已痊愈出院")
+    pattern_heal = re.compile(r"，出院病例(\d+)例")
     for hm in pattern_heal.finditer(content):
-        province.Healed += int(hm.groups()[0])
+        province.Healed = int(hm.groups()[0])
 
     city = {}
-    pattern_data = re.compile(r">([\u4E00-\u9FA5]+)(\d+)例")
+    pattern_data = re.compile(r"\.([\u4E00-\u9FA5]+)(\d+)例")
     for i in pattern_data.finditer(content[content.rfind("累计报告"):content.rfind("疑似病例")]):
         name = utils.remove_preposition(i.groups()[0])
         if '盟' in name[:-1]:
