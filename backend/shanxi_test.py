@@ -10,7 +10,7 @@ class Test_parse_html(unittest.TestCase):
         with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/shanxi_list_sample.html',encoding='utf-8') as f:
             res = shanxi.parse_list_html(f.read())
             self.assertEqual(
-                res, "http://wjw.shanxi.gov.cn:80/wjywl02/24724.hrh")
+                res, "http://wjw.shanxi.gov.cn:80/wjywl02/24937.hrh")
 
     def test_parse_content_html(self):
         with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/shanxi_content_sample.html',encoding='utf-8') as f:
