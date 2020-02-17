@@ -35,7 +35,7 @@ api_prefix = "/api/v1/provinces/" + provinceKey
 def parse_list_html(raw):
     pattern = re.compile(
         r"(?s)(<a .*?<\/a>)")
-    pattern_title = re.compile(r"福建省新增新型冠状病毒感染的肺炎疫情情况")
+    pattern_title = re.compile(r"福建省新型冠状病毒肺炎疫情情况")
 
     p = ArticleParser()
     for m in pattern.finditer(raw):
