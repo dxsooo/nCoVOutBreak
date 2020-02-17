@@ -27,7 +27,7 @@ cities = {
     "衡水市": "hengshui",
 }
 
-base_url = "http://hebwst.gov.cn/"
+base_url = "http://wsjkw.hebei.gov.cn/"
 root_url = base_url + "index.do?templet=new_list&cid=14"
 provinceKey = "hebei"
 provinceName = "河北"
