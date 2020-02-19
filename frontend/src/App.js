@@ -133,10 +133,20 @@ class App extends Component {
             { title: '台湾', key: 'taiwan' , disabled: true, data: {} },
         ];
         this.state = {
-            activeKey: panes[0].key,
+            activeKey: this.getDefaultKey(panes),
             panes,
             loaded: false
         };
+    }
+
+    getDefaultKey(panes) {
+        const province = /(.*?)[省市特自]/.exec(window["returnCitySN"].cname)[1];
+        const m = panes.filter(x=>{
+            return x.title === province && !x.disabled;
+        });
+        if (m.length > 0)
+            return m[0].key;
+        return "beijing"
     }
 
     updateData(key) {
