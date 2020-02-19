@@ -6,11 +6,8 @@ import {Tabs} from 'antd';
 
 const {TabPane} = Tabs;
 
-function callback(key) {
-    console.log(key);
-}
-
 require('echarts/map/js/province/beijing.js');
+require('echarts/map/js/province/tianjin.js');
 require('echarts/map/js/province/hebei.js');
 require('echarts/map/js/province/shanxi.js');
 require('echarts/map/js/province/neimenggu.js');
@@ -21,40 +18,12 @@ require('echarts/map/js/province/guangdong.js');
 class Chart extends Component {
     constructor(props) {
         super(props);
-        this.state = this.getInitialState();
+        this.state = {
+            option:this.getInitialOption(),
+        };
     }
 
-    getInitialState = () => ({
-        option: this.getOption(),
-        isLoaded: false
-    });
-
-    componentDidMount() {
-        axios.get("https://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/" + this.props.province).then(
-            result => {
-                const data = result.data;
-                const option = this.state.option;
-                option.title.text = data.province + '新冠肺炎 2019-nCoV 爆发最新疫情情况';
-                option.title.subtext = '累计确诊病例:' + data.confirmed + ' 累计死亡病例:' + data.dead + ' 累计治愈病例:' + data.healed;
-                option.series[0].mapType = data.province;
-                option.series[0].data = data.cities.map(x => {
-                    return {'name': x.city, 'value': x.confirmed}
-                });
-                this.setState({
-                    option: option,
-                    isLoaded: true
-                });
-            },
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
-            error => {
-                console.error(error)
-            }
-        );
-    }
-
-    getOption = () => {
+    getInitialOption = () => {
         return {
             title: {
                 left: 'center'
@@ -104,79 +73,112 @@ class Chart extends Component {
     };
 
     render() {
-        return !this.state.isLoaded ? <div/> :
-            (
+        if (this.props.loaded) {
+            const option = this.state.option;
+            option.title.text = this.props.data.province + '新冠肺炎 2019-nCoV 爆发最新疫情情况';
+            option.title.subtext = '累计确诊病例:' + this.props.data.confirmed + ' 累计死亡病例:' + this.props.data.dead + ' 累计治愈病例:' + this.props.data.healed;
+            option.series[0].mapType = this.props.data.province;
+            option.series[0].data = this.props.data.cities.map(x => {
+                return {'name': x.city, 'value': x.confirmed}
+            });
+            return (
                 <ReactEcharts
                     style={{height: '700px', width: '100%'}}
                     notMerge={true}
                     lazyUpdate={true}
-                    option={this.state.option || {}}/>
-            );
+                    option={option}/>
+            )
+        }
+        return (<div/>)
     }
 }
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        const panes = [
+            { title: '北京', key: 'beijing', disabled: false, data: {} },
+            { title: '天津', key: 'tianjin', disabled: false, data: {} },
+            { title: '河北', key: 'hebei' , disabled: false, data: {} },
+            { title: '山西', key: 'shanxi', disabled: true, data: {} },
+            { title: '内蒙古', key: 'neimenggu' , disabled: false, data: {} },
+            { title: '辽宁', key: 'liaoning' , disabled: false, data: {} },
+            { title: '吉林', key: 'jilin' , disabled: true, data: {} },
+            { title: '黑龙江', key: 'heilongjiang' , disabled: true, data: {} },
+            { title: '上海', key: 'shanghai' , disabled: true, data: {} },
+            { title: '江苏', key: 'jiangsu' , disabled: true, data: {} },
+            { title: '浙江', key: 'zhejiang' , disabled: true, data: {} },
+            { title: '安徽', key: 'anhui' , disabled: true, data: {} },
+            { title: '福建', key: 'fujian' , disabled: false, data: {} },
+            { title: '江西', key: 'jiangxi' , disabled: true, data: {} },
+            { title: '山东', key: 'shandong' , disabled: true, data: {} },
+            { title: '河南', key: 'henan' , disabled: true, data: {} },
+            { title: '湖北', key: 'hubei' , disabled: true, data: {} },
+            { title: '湖南', key: 'hunan' , disabled: true, data: {} },
+            { title: '广东', key: 'guangdong' , disabled: false, data: {} },
+            { title: '广西', key: 'guangxi' , disabled: true, data: {} },
+            { title: '海南', key: 'hainan' , disabled: true, data: {} },
+            { title: '重庆', key: 'chongqing' , disabled: true, data: {} },
+            { title: '四川', key: 'sichuan' , disabled: true, data: {} },
+            { title: '贵州', key: 'guizhou' , disabled: true, data: {} },
+            { title: '云南', key: 'yunnan' , disabled: true, data: {} },
+            { title: '西藏', key: 'xizang' , disabled: true, data: {} },
+            { title: '陕西', key: 'shaanxi' , disabled: true, data: {} },
+            { title: '甘肃', key: 'gansu' , disabled: true, data: {} },
+            { title: '青海', key: 'qinghai' , disabled: true, data: {} },
+            { title: '宁夏', key: 'ningxia' , disabled: true, data: {} },
+            { title: '新疆', key: 'xinjiang' , disabled: true, data: {} },
+            { title: '香港', key: 'hongkong' , disabled: true, data: {} },
+            { title: '澳门', key: 'macao' , disabled: true, data: {} },
+            { title: '台湾', key: 'taiwan' , disabled: true, data: {} },
+        ];
+        this.state = {
+            activeKey: panes[0].key,
+            panes,
+            loaded: false
+        };
+    }
+
+    updateData(key) {
+        axios.get("https://service-r8373tyc-1253891892.gz.apigw.tencentcs.com/api/v1/provinces/" + key).then(
+            result => {
+                const panes = this.state.panes;
+                const panef = panes.filter(x=>{
+                    return x.key === key;
+                });
+                panes[panes.indexOf(panef[0])].data = result.data;
+                this.setState({
+                    panes:panes,
+                    loaded:true,
+                })
+            },
+            error => {
+                console.error(error)
+            }
+        );
+    }
+
+    componentDidMount() {
+        this.updateData(this.state.activeKey);
+    }
+
+    onChange = activeKey => {
+        this.setState({ activeKey, loaded:false });
+        this.updateData(activeKey);
+    };
+
     render() {
         return (
             <div className="App">
-                <Tabs defaultActiveKey="beijing" onChange={callback}>
-                    <TabPane tab="北京" key="beijing">
-                        <Chart province="beijing"/>
-                    </TabPane>
-                    <TabPane tab="天津" disabled key="tianjin">
-                        Content of Tab Pane 2
-                    </TabPane>
-                    <TabPane tab="河北" key="hebei">
-                        <Chart province="hebei"/>
-                    </TabPane>
-                    <TabPane tab="山西" disabled key="shanxi">
-                        <Chart province="shanxi"/>
-                    </TabPane>
-                    <TabPane tab="内蒙古" key="neimenggu">
-                        <Chart province="neimenggu"/>
-                    </TabPane>
-                    <TabPane tab="辽宁" key="liaoning">
-                        <Chart province="liaoning"/>
-                    </TabPane>
-                    <TabPane tab="吉林" disabled key="jilin">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="黑龙江" disabled key="heilongjiang">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="上海" disabled key="shanghai">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="江苏" disabled key="jiangsu">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="浙江" disabled key="zhejiang">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="安徽" disabled key="anhui">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="福建" key="fujian">
-                        <Chart province="fujian"/>
-                    </TabPane>
-                    <TabPane tab="江西" disabled key="jiangxi">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="山东" disabled key="shandong">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="河南" disabled key="henan">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="湖北" disabled key="hubei">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="湖南" disabled key="hunan">
-                        Content of Tab Pane 3
-                    </TabPane>
-                    <TabPane tab="广东" key="guangdong">
-                        <Chart province="guangdong"/>
-                    </TabPane>
+                <Tabs
+                    onChange={this.onChange}
+                    activeKey={this.state.activeKey}
+                >
+                    {this.state.panes.map(pane => (
+                        <TabPane tab={pane.title} key={pane.key} disabled={pane.disabled} >
+                            <Chart data={pane.data} loaded={this.state.loaded}/>
+                        </TabPane>
+                    ))}
                 </Tabs>
             </div>
         )
