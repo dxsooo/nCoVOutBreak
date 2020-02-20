@@ -14,7 +14,8 @@ require('echarts/map/js/province/neimenggu.js');
 require('echarts/map/js/province/liaoning.js');
 require('echarts/map/js/province/jilin.js');
 require('echarts/map/js/province/heilongjiang.js');
-require('echarts/map/js/province/jiangsu');
+require('echarts/map/js/province/jiangsu.js');
+require('echarts/map/js/province/zhejiang.js');
 require('echarts/map/js/province/fujian.js');
 require('echarts/map/js/province/guangdong.js');
 
@@ -40,10 +41,13 @@ class Chart extends Component {
             },
             visualMap: {
                 min: 0,
-                max: 500,
+                max: 1500,
                 left: 'left',
                 top: 'bottom',
-                calculable: true
+                calculable: true,
+                inRange: {
+                    color: ['#f6ea8c', '#f26d5b', '#c03546', '#492540']
+                }
             },
             toolbox: {
                 show: true,
@@ -110,7 +114,7 @@ class App extends Component {
             { title: '黑龙江', key: 'heilongjiang' , disabled: false, data: {} },
             { title: '上海', key: 'shanghai' , disabled: true, data: {} },
             { title: '江苏', key: 'jiangsu' , disabled: false, data: {} },
-            { title: '浙江', key: 'zhejiang' , disabled: true, data: {} },
+            { title: '浙江', key: 'zhejiang' , disabled: false, data: {} },
             { title: '安徽', key: 'anhui' , disabled: true, data: {} },
             { title: '福建', key: 'fujian' , disabled: false, data: {} },
             { title: '江西', key: 'jiangxi' , disabled: true, data: {} },
