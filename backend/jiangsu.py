@@ -12,32 +12,32 @@ logger = logging.getLogger()
 logger.setLevel(level=logging.INFO)
 
 cities = {
-    "哈尔滨市": "haerbin",
-    "齐齐哈尔市": "qiqihaer",
-    "牡丹江市": "mudanjiang",
-    "佳木斯市": "jiamusi",
-    "大庆市": "daqing",
-    "鸡西市": "jixi",
-    "双鸭山市": "shuangyashan",
-    "伊春市": "yichun",
-    "七台河市": "qitaihe",
-    "鹤岗市": "hegang",
-    "绥化市": "suihua",
-    "黑河市": "heihe",
-    "大兴安岭地区": "daxinganling",
+    "南京市": "nanjing",
+    "无锡市": "wuxi",
+    "徐州市": "xuzhou",
+    "常州市": "changzhou",
+    "苏州市": "suzhou",
+    "南通市": "nantong",
+    "连云港市": "lianyungang",
+    "淮安市": "huaian",
+    "盐城市": "yancheng",
+    "扬州市": "yangzhou",
+    "镇江市": "zhenjiang",
+    "泰州市": "taizhou",
+    "宿迁市": "suqian",
 }
 
 
-base_url = "http://wsjkw.hlj.gov.cn"
-root_url = base_url + "/index.php/Home/Zwgk/all/typeid/42"
-provinceKey = "heilongjiang"
-provinceName = "黑龙江"
+base_url = "http://wjw.jiangsu.gov.cn"
+root_url = base_url + "/col/col7290/index.html"
+provinceKey = "jiangsu"
+provinceName = "江苏"
 api_prefix = "/api/v1/provinces/" + provinceKey
 
 
 def parse_list_html(raw):
     pattern = re.compile(r"<li>(.*?)<\/li>")
-    pattern_title = re.compile(r"最新疫情通报...")
+    pattern_title = re.compile(r".*新增新型冠状病毒肺炎确诊病例")
 
     p = ArticleParser()
     for m in pattern.finditer(raw):
@@ -53,27 +53,23 @@ def parse_list_html(raw):
 
 
 def parse_content_html(raw):
-    pattern = re.compile(r"(?s)<div class=\"danye\">(.*?)<\/div>")
+    pattern = re.compile(r"<!--ZJEG_RSS.content.begin-->(.*)<!--ZJEG_RSS.content.end-->")
     m = pattern.search(raw)
     content = m.groups()[0]
 
     province = ProvinceData(provinceName, provinceKey)
     pattern_confirm = re.compile(r"确诊病例(\d+)例")
-    cm = pattern_confirm.findall(content)
-    if len(cm) > 0:
-        province.Confirmed = max([int(x) for x in cm])
-    pattern_heal = re.compile(r"出院病例(\d+)例")
-    hm = pattern_heal.findall(content)
-    if len(hm) > 0:
-        province.Healed = max([int(x) for x in hm])
-    pattern_dead = re.compile(r"死亡病例(\d+)例")
-    dm = pattern_dead.findall(content)
-    if len(dm) > 0:
-        province.Dead = max([int(x) for x in dm])
+    cm = pattern_confirm.search(content)
+    if cm is not None:
+        province.Confirmed = int(cm.groups()[0])
+    pattern_heal = re.compile(r"累计.*?出院病例(\d+)例")
+    hm = pattern_heal.search(content)
+    if hm is not None:
+        province.Healed = int(hm.groups()[0])
 
     city = {}
-    pattern_data = re.compile(r"[、：]([\u4E00-\u9FA5]+)(\d+)例")
-    for i in pattern_data.finditer(content):
+    pattern_data = re.compile(r"[、，]([\u4E00-\u9FA5]+)(\d+)例")
+    for i in pattern_data.finditer(content[content.find("确诊病例中"):]):
         name = i.groups()[0]
         if name in cities.keys():
             id = cities[name]
