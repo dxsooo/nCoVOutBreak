@@ -13,6 +13,7 @@ require('echarts/map/js/province/shanxi.js');
 require('echarts/map/js/province/neimenggu.js');
 require('echarts/map/js/province/liaoning.js');
 require('echarts/map/js/province/jilin.js');
+require('echarts/map/js/province/heilongjiang.js');
 require('echarts/map/js/province/fujian.js');
 require('echarts/map/js/province/guangdong.js');
 
@@ -105,7 +106,7 @@ class App extends Component {
             { title: '内蒙古', key: 'neimenggu' , disabled: false, data: {} },
             { title: '辽宁', key: 'liaoning' , disabled: false, data: {} },
             { title: '吉林', key: 'jilin' , disabled: false, data: {} },
-            { title: '黑龙江', key: 'heilongjiang' , disabled: true, data: {} },
+            { title: '黑龙江', key: 'heilongjiang' , disabled: false, data: {} },
             { title: '上海', key: 'shanghai' , disabled: true, data: {} },
             { title: '江苏', key: 'jiangsu' , disabled: true, data: {} },
             { title: '浙江', key: 'zhejiang' , disabled: true, data: {} },
