@@ -12,24 +12,29 @@ logger = logging.getLogger()
 logger.setLevel(level=logging.INFO)
 
 cities = {
-    "拉萨市": "lasa",
-    "日喀则市": "rikaze",
-    "昌都市": "changdu",
-    "林芝市": "linzhi",
-    "山南市": "shannan",
-    "那曲地区": "naqu",
-    "阿里地区": "ali",
+    "南昌市": "nanchang",
+    "景德镇市": "jingdezhen",
+    "萍乡市": "pingxiang",
+    "九江市": "jiujiang",
+    "新余市": "xinyu",
+    "鹰潭市": "yingtan",
+    "赣州市": "ganzhou",
+    "吉安市": "jian",
+    "宜春市": "yichun",
+    "抚州市": "fuzhou",
+    "上饶市": "shangrao",
 }
 
 
-root_url = "http://wjw.xizang.gov.cn/xwzx/wsjkdt/"
-provinceKey = "xizang"
-provinceName = "西藏"
+base_url = "http://hc.jiangxi.gov.cn"
+root_url = base_url + "/ztxx/xxgzbdgrdfyyqfk/yqtb/index.shtml"
+provinceKey = "jiangxi"
+provinceName = "江西"
 api_prefix = "/api/v1/provinces/" + provinceKey
 
 
 def parse_list_html(raw):
-    pattern = re.compile(r"(?s)<li class=\"wrap2_li\">(.*?)<\/li>")
+    pattern = re.compile(r"(?s)<li>(.*?)<\/li>")
     pattern_title = re.compile(r".*肺炎疫情情况")
 
     p = ArticleParser()
@@ -40,34 +45,40 @@ def parse_list_html(raw):
     latest_url = ""
     for res in p.get_articles():
         if pattern_title.match(res["title"]) is not None:
-            latest_url = root_url + res["href"][2:]
+            latest_url = base_url + res["href"]
             break
     return latest_url
 
 
 def parse_content_html(raw):
-    pattern = re.compile(r"<div class=\"view TRS_UEDITOR trs_paper_default trs_web\">(.*)<\/div>")
+    pattern = re.compile(r"(?s)<!--<\$\[CONTENT\]>start-->(.*)<\/div>")
     m = pattern.search(raw)
     content = m.groups()[0]
 
     province = ProvinceData(provinceName, provinceKey)
-    pattern_confirm = re.compile(r"累计确诊.*?病例(\d+)例")
+    pattern_confirm = re.compile(r"累计.*?确诊病例(\d+)例")
     cm = pattern_confirm.search(content)
     if cm is not None:
         province.Confirmed = int(cm.groups()[0])
-    pattern_heal = re.compile(r"出院病例(\d+)例")
+    pattern_heal = re.compile(r"累计.*?出院病例(\d+)例")
     hm = pattern_heal.search(content)
     if hm is not None:
         province.Healed = int(hm.groups()[0])
+    pattern_dead = re.compile(r"累计.*?死亡病例(\d+)例")
+    dm = pattern_dead.search(content)
+    if dm is not None:
+        province.Dead = int(dm.groups()[0])
 
     city = {}
-    name = "拉萨市"
-    if name in cities.keys():
-        id = cities[name]
-        if id not in city.keys():
-            d = CityData(name, id)
-            d.Confirmed = 1
-            city[id] = d
+    pattern_data = re.compile(r"[，、]([\u4E00-\u9FA5]+)(\d+)例")
+    for i in pattern_data.finditer(content[content.rfind("确诊病例中"):]):
+        name = i.groups()[0]
+        if name in cities.keys():
+            id = cities[name]
+            if id not in city.keys():
+                d = CityData(name, id)
+                d.Confirmed = int(i.groups()[1])
+                city[id] = d
     return province, city
 
 
