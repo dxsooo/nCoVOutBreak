@@ -21,6 +21,7 @@ require('echarts/map/js/province/jilin.js');
 require('echarts/map/js/province/heilongjiang.js');
 require('echarts/map/js/province/jiangsu.js');
 require('echarts/map/js/province/zhejiang.js');
+require('echarts/map/js/province/anhui.js');
 require('echarts/map/js/province/fujian.js');
 require('echarts/map/js/province/guangdong.js');
 require('echarts/map/js/province/xizang.js');
@@ -47,7 +48,7 @@ class Chart extends Component {
             },
             visualMap: {
                 min: 0,
-                max: 1500,
+                max: 800,
                 left: 'left',
                 top: 'bottom',
                 calculable: true,
@@ -122,7 +123,7 @@ class App extends Component {
             {title: '上海', key: 'shanghai', disabled: true, data: {}},
             {title: '江苏', key: 'jiangsu', disabled: false, data: {}},
             {title: '浙江', key: 'zhejiang', disabled: false, data: {}},
-            {title: '安徽', key: 'anhui', disabled: true, data: {}},
+            {title: '安徽', key: 'anhui', disabled: false, data: {}},
             {title: '福建', key: 'fujian', disabled: false, data: {}},
             {title: '江西', key: 'jiangxi', disabled: true, data: {}},
             {title: '山东', key: 'shandong', disabled: true, data: {}},
