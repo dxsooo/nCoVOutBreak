@@ -23,9 +23,9 @@ class ArticleParser(HTMLParser):
                 self.temp_article = article
     
     def handle_data(self, data):
-        if self.temp_article is not None:
+        if self.temp_article is not None and len(data.strip()) > 0:
             article = self.temp_article
-            article['title'] = data
+            article['title'] = data.strip()
             self.articles.append(article)
             self.temp_article = None
 
