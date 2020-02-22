@@ -67,8 +67,8 @@ def parse_content_html(raw):
         province.Healed = int(hm.groups()[0])
 
     city = {}
-    pattern_data = re.compile(r"\.([\u4E00-\u9FA5]+)(\d+)例")
-    for i in pattern_data.finditer(content[content.rfind("累计报告"):content.rfind("疑似病例")]):
+    pattern_data = re.compile(r"[\.\u200b]([\u4E00-\u9FA5]+)(\d+)例")
+    for i in pattern_data.finditer(content[content.rfind("累计报告"):content.rfind("重症病例")]):
         name = utils.remove_preposition(i.groups()[0])
         if '盟' in name[:-1]:
             name = name[:name.find('盟')+1]
@@ -80,6 +80,8 @@ def parse_content_html(raw):
                 d = CityData(name, id)
                 d.Confirmed = int(i.groups()[1])
                 city[id] = d
+            else:
+                city[id].Confirmed += int(i.groups()[1])
     return province, city
 
 

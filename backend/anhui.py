@@ -26,6 +26,7 @@ cities = {
     "铜陵市": "tongling",
     "淮北市": "huaibei",
     "亳州市": "bozhou",
+    "阜阳市": "fuyang",
     "池州市": "chizhou",
 }
 

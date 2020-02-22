@@ -16,10 +16,10 @@ class Test_parse_html(unittest.TestCase):
         with open(os.path.dirname(os.path.abspath(__file__))+'/testdata/neimenggu_content_sample.html',encoding='utf-8') as f:
             province, city = neimenggu.parse_content_html(f.read())
             self.assertEqual(province.ProvinceName, "内蒙古")
-            self.assertEqual(province.Confirmed, 72)
-            self.assertEqual(province.Healed, 8)
-            self.assertEqual(city['wuhai'].CityName, "乌海市")
-            self.assertEqual(city['wuhai'].Confirmed, 2)
+            self.assertEqual(province.Confirmed, 75)
+            self.assertEqual(province.Healed, 22)
+            self.assertEqual(city['bayanzhuoer'].CityName, "巴彦淖尔市")
+            self.assertEqual(city['bayanzhuoer'].Confirmed, 8)
 
 
 if __name__ == '__main__':
