@@ -64,6 +64,10 @@ def parse_content_html(raw):
     hm = pattern_heal.search(content)
     if hm is not None:
         province.Healed = int(hm.groups()[0])
+    pattern_dead = re.compile(r"累计死亡(\d+)例")
+    dm = pattern_dead.search(content)
+    if dm is not None:
+        province.Dead = int(dm.groups()[0])
 
     city = {}
     pattern_data = re.compile(r"[、，]([\u4E00-\u9FA5]+)(\d+)例")
