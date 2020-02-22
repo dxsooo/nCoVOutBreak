@@ -33,6 +33,7 @@ require('echarts/map/js/province/guizhou.js');
 require('echarts/map/js/province/yunnan.js');
 require('echarts/map/js/province/xizang.js');
 require('echarts/map/js/province/shanxi1.js');
+require('echarts/map/js/province/qinghai.js');
 
 class Chart extends Component {
     constructor(props) {
@@ -149,7 +150,7 @@ class App extends Component {
             {title: '西藏', key: 'xizang', disabled: false, data: {}},
             {title: '陕西', key: 'shaanxi', disabled: false, data: {}},
             {title: '甘肃', key: 'gansu', disabled: true, data: {}},
-            {title: '青海', key: 'qinghai', disabled: true, data: {}},
+            {title: '青海', key: 'qinghai', disabled: false, data: {}},
             {title: '宁夏', key: 'ningxia', disabled: true, data: {}},
             {title: '新疆', key: 'xinjiang', disabled: true, data: {}},
             {title: '香港', key: 'hongkong', disabled: true, data: {}},
