@@ -28,6 +28,7 @@ require('echarts/map/js/province/henan.js');
 require('echarts/map/js/province/hunan.js');
 require('echarts/map/js/province/guangdong.js');
 require('echarts/map/js/province/guangxi.js');
+require('echarts/map/js/province/hainan.js');
 require('echarts/map/js/province/xizang.js');
 
 class Chart extends Component {
@@ -99,6 +100,7 @@ class Chart extends Component {
             option.series[0].data = this.props.data.cities.map(x => {
                 return {'name': x.city, 'value': x.confirmed}
             });
+            option.series[0].label.normal.show = this.props.data.province!=="海南";
             return (
                 <ReactEchartsCore
                     echarts={echarts}
@@ -136,7 +138,7 @@ class App extends Component {
             {title: '湖南', key: 'hunan', disabled: false, data: {}},
             {title: '广东', key: 'guangdong', disabled: false, data: {}},
             {title: '广西', key: 'guangxi', disabled: false, data: {}},
-            {title: '海南', key: 'hainan', disabled: true, data: {}},
+            {title: '海南', key: 'hainan', disabled: false, data: {}},
             {title: '重庆', key: 'chongqing', disabled: true, data: {}},
             {title: '四川', key: 'sichuan', disabled: true, data: {}},
             {title: '贵州', key: 'guizhou', disabled: true, data: {}},
