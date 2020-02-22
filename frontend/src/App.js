@@ -24,6 +24,7 @@ require('echarts/map/js/province/zhejiang.js');
 require('echarts/map/js/province/anhui.js');
 require('echarts/map/js/province/fujian.js');
 require('echarts/map/js/province/jiangxi.js');
+require('echarts/map/js/province/henan.js');
 require('echarts/map/js/province/guangdong.js');
 require('echarts/map/js/province/xizang.js');
 
@@ -128,7 +129,7 @@ class App extends Component {
             {title: '福建', key: 'fujian', disabled: false, data: {}},
             {title: '江西', key: 'jiangxi', disabled: false, data: {}},
             {title: '山东', key: 'shandong', disabled: true, data: {}},
-            {title: '河南', key: 'henan', disabled: true, data: {}},
+            {title: '河南', key: 'henan', disabled: false, data: {}},
             {title: '湖北', key: 'hubei', disabled: true, data: {}},
             {title: '湖南', key: 'hunan', disabled: true, data: {}},
             {title: '广东', key: 'guangdong', disabled: false, data: {}},
